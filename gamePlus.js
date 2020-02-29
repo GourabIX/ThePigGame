@@ -45,7 +45,7 @@ function newGame() {
   winningScore = 100;
 
   var input = document.querySelector(".final-score").value;
-
+  
 
   // hide dice before dice is rolled by user
   document.querySelector(".dice").style.display = "none";
@@ -67,7 +67,7 @@ function newGame() {
 newGame();
 
 // what happens when the dice is rolled?
-document.querySelector(".btn-roll").addEventListener("click", function () {
+document.querySelector(".btn-roll").addEventListener("click", function() {
   if (!gameConcluded) {
     // get the value of the dice roll
     dice = Math.floor(Math.random() * 6) + 1;
@@ -94,14 +94,11 @@ document.querySelector(".btn-roll").addEventListener("click", function () {
   }
 });
 
-document.querySelector(".btn-hold").addEventListener("click", function () {
+document.querySelector(".btn-hold").addEventListener("click", function() {
   if (!gameConcluded) {
     playerScores[activePlayer] += roundScore;
     document.getElementById("score-" + activePlayer).textContent =
       playerScores[activePlayer];
-
-    var winScoreInput = document.querySelector(".final-score").value;
-    if (winScoreInput) winningScore = winScoreInput;
 
     if (playerScores[activePlayer] >= winningScore) {
       document
