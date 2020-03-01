@@ -26,11 +26,12 @@ Change the game to follow these rules:
 var playerScores, roundScore, activePlayer, gameConcluded, dice, lastDice, winningScore;
 
 function changePlayer() {
+  hideDices();
+
   roundScore = 0;
   activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
   document.getElementById("current-0").textContent = roundScore;
   document.getElementById("current-1").textContent = roundScore;
-  document.querySelector(".dice").style.display = "none";
   document.querySelector(".player-0-panel").classList.toggle("active");
   document.querySelector(".player-1-panel").classList.toggle("active");
 }
@@ -41,14 +42,12 @@ function newGame() {
   activePlayer = 0;
   gameConcluded = false;
   dice = 0;
-  lastDice = 0;
+  lastDice1 = 0;
+  lastDice2 = 0;
   winningScore = 100;
 
-  var input = document.querySelector(".final-score").value;
-  
-
-  // hide dice before dice is rolled by user
-  document.querySelector(".dice").style.display = "none";
+  checkWinningScore();
+  hideDices();
 
   document.getElementById("score-0").textContent = "0";
   document.getElementById("score-1").textContent = "0";
@@ -67,24 +66,29 @@ function newGame() {
 newGame();
 
 // what happens when the dice is rolled?
-document.querySelector(".btn-roll").addEventListener("click", function() {
+document.querySelector(".btn-roll").addEventListener("click", function () {
   if (!gameConcluded) {
     // get the value of the dice roll
-    dice = Math.floor(Math.random() * 6) + 1;
-    if (lastDice === 6 && dice === 6) {
+    dice1 = Math.floor(Math.random() * 6) + 1;
+    dice2 = Math.floor(Math.random() * 6) + 1;
+    if ((lastDice1 === 6 && dice === 6) || (lastDice2 === 6 && dice2 === 6)) {
       playerScores[activePlayer] = 0;
-      lastDice = 0;
+      lastDice1 = 0;
+      lastDice2 = 0;
       changePlayer();
-    } else lastDice = dice;
+    } else {
+      lastDice1 = dice1;
+      lastDice2 = dice2;
+    }
 
     // dice is rolled; show the dice
-    var diceDOM = document.querySelector(".dice");
-    diceDOM.style.display = "block";
-    diceDOM.src = "assets/dice-" + dice + ".png";
+    showDices();
+    document.getElementById("dice-1").src = "assets/dice-" + dice1 + ".png";
+    document.getElementById("dice-2").src = "assets/dice-" + dice2 + ".png";
 
     // Update the Round Score if the rolled dice is not a 1.
-    if (dice !== 1) {
-      roundScore += dice;
+    if (dice1 !== 1 && dice2 !== 1) {
+      roundScore += dice1 + dice2;
       document.getElementById(
         "current-" + activePlayer
       ).textContent = roundScore;
@@ -94,8 +98,10 @@ document.querySelector(".btn-roll").addEventListener("click", function() {
   }
 });
 
-document.querySelector(".btn-hold").addEventListener("click", function() {
+document.querySelector(".btn-hold").addEventListener("click", function () {
   if (!gameConcluded) {
+    checkWinningScore();
+
     playerScores[activePlayer] += roundScore;
     document.getElementById("score-" + activePlayer).textContent =
       playerScores[activePlayer];
@@ -107,7 +113,7 @@ document.querySelector(".btn-hold").addEventListener("click", function() {
       document
         .querySelector(".player-" + activePlayer + "-panel")
         .classList.remove("active");
-      document.querySelector(".dice").style.display = "none";
+      hideDices();
       document.getElementById("name-" + activePlayer).textContent = "WINNER!";
       gameConcluded = true;
     } else {
@@ -115,5 +121,20 @@ document.querySelector(".btn-hold").addEventListener("click", function() {
     }
   }
 });
+
+function checkWinningScore() {
+  var input = document.querySelector(".final-score").value;
+  if (input) winningScore = input;
+}
+
+function hideDices() {
+  document.getElementById("dice-1").style.display = "none";
+  document.getElementById("dice-2").style.display = "none";
+}
+
+function showDices() {
+  document.getElementById("dice-1").style.display = "block";
+  document.getElementById("dice-2").style.display = "block";
+}
 
 document.querySelector(".btn-new").addEventListener("click", newGame);
