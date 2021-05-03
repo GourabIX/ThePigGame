@@ -1,4 +1,4 @@
-# The Pig Game
+# The Dice Game
 
 ## Developed with love by Gourab Sarkar
 
